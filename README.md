@@ -1,6 +1,6 @@
 # BigData Project - Detecting Text Similarities in PubMed dataset
 
-![cover](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.cshl.edu%2Flatest-advances-malaria-research-free-ebook-cold-spring-harbor-laboratory-press%2F&psig=AOvVaw22pcURp1Wi1l12Vk37NLqB&ust=1607962492833000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNjgoJyty-0CFQAAAAAdAAAAABAD)
+![cover](malaria_research_cover.jpg)
 
 Project developed in the first semester of the second year of the master studies in Computational Optimization,
 Faculty of Computer Science, Iasi, for the BigData laboratory.
