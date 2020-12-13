@@ -49,7 +49,7 @@ used for the text similarity (Min-Hashing, K-means) are going to be **compared**
 ### Project development plan 
 
 - **Phase 1**: **Environment configuration**, Github repository 
-- **Phase 2**: **Parsing the dataset**, all archives, gathering all files together
+- **Phase 2**: **Parsing the dataset**, gathering all files together in a pyspark rdd, finding relevant XML fields
 - **Phase 3**: Since the `small samples` dataset is not available anymore, we are going to **build
 our own testing dataset**, with a smaller size comparing to the initial one
 - **Phase 4**: **Provide statistics** / visualization and insights about the data
