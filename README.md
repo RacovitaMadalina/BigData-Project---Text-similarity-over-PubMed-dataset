@@ -48,10 +48,10 @@ used for the text similarity (Min-Hashing, K-means) are going to be **compared**
 
 ### Project development plan 
 
-- **Phase 1**: **Environment configuration**, Github repository 
+- **Phase 1**: **Environment configuration**, Github repository - **DONE**
 - **Phase 2**: **Parsing the dataset**, gathering all files together in a pyspark rdd, finding relevant XML fields
 - **Phase 3**: Since the `small samples` dataset is not available anymore, we are going to **build
-our own testing dataset**, with a smaller size comparing to the initial one
+our own testing dataset**, with a smaller size comparing to the initial one - **DONE**
 - **Phase 4**: **Provide statistics** / visualization and insights about the data
 - **Phase 5**: **Research** on the algorithms used for text similarity detection on datasets of large dimensions (ideas: Min-hashing)
 - **Phase 6**: Discuss and transform the initial dataset into an **established form for training the algorithms** (

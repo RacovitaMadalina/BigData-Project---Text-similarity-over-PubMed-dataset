@@ -116,3 +116,6 @@ draft.py
 2016/
 
 .DS_Store
+
+/datasets/2016_all_data/
+/datasets/2016_testing_df/
