@@ -56,6 +56,7 @@ python build_testing_df.py
 ```
 
 After you execute these commands you should have the folder structure under `datasets/` directory like this:
+
 ```
 datasets/
 ____    2016_all_data/
