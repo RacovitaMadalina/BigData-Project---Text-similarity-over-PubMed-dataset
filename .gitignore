@@ -119,3 +119,5 @@ draft.py
 
 /datasets/2016_all_data/
 /datasets/2016_testing_df/
+spark-warehouse/
+/output/*
