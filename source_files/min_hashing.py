@@ -11,7 +11,7 @@ import re
 import os
 import sys
 
-from data_parsing import get_final_to_df
+from data_parsing import get_simplified_to_df
 
 
 def getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = 20) :
@@ -83,7 +83,7 @@ if __name__ == '__main__' :
     sc = SparkContext(conf = conf)
     spark = SparkSession(sc)
 
-    articlesDataFrame = get_final_to_df(spark, inputDirectory)
+    articlesDataFrame = get_simplified_to_df(spark, inputDirectory)
     rescaledDataFrame = getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = numFeatures)
 
     mh = MinHashLSH(inputCol = "features", outputCol = "hashes", numHashTables = numHashTables)
