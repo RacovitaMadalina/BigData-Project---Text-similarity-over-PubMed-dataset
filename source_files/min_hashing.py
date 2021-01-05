@@ -1,5 +1,6 @@
 import findspark
 findspark.init()
+
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col, collect_set
@@ -11,6 +12,7 @@ import os
 import sys
 
 from data_parsing import get_final_to_df
+
 
 def getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = 20) :
     regexTokenizer = RegexTokenizer(inputCol = "body", outputCol = "words", pattern = "\\W")
@@ -65,7 +67,7 @@ if __name__ == '__main__' :
     noOfArguments = len(sys.argv)
 
     if noOfArguments < 4 :
-        print ("Usage: py " + os.path.basename(__file__) + " <inputDirectory> <outputDirectory> <runName> <numFeatures> <numHashTables> <distanceThreshold> \n", )
+        print("Usage: py " + os.path.basename(__file__) + " <inputDirectory> <outputDirectory> <runName> <numFeatures> <numHashTables> <distanceThreshold> \n", )
         sys.exit()
 
     inputDirectory = sys.argv[1]
