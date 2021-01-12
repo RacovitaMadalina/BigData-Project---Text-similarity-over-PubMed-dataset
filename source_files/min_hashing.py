@@ -1,4 +1,5 @@
 import findspark
+
 findspark.init()
 
 from pyspark import SparkConf, SparkContext
@@ -14,19 +15,19 @@ import sys
 from data_parsing import get_simplified_to_df
 
 
-def getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = 20) :
-    regexTokenizer = RegexTokenizer(inputCol = "body", outputCol = "words", pattern = "\\W")
-    remover = StopWordsRemover(inputCol = "words", outputCol=  "filtered")
-    hashingTF = HashingTF(inputCol = "filtered", outputCol = "rawFeatures", numFeatures = numFeatures)
-    idf = IDF(inputCol = "rawFeatures", outputCol = "features")
-    
+def getArticlesFeaturesFromBody(articlesDataFrame, numFeatures=20):
+    regexTokenizer = RegexTokenizer(inputCol="body", outputCol="words", pattern="\\W")
+    remover = StopWordsRemover(inputCol="words", outputCol="filtered")
+    hashingTF = HashingTF(inputCol="filtered", outputCol="rawFeatures", numFeatures=numFeatures)
+    idf = IDF(inputCol="rawFeatures", outputCol="features")
+
     countTokens = udf(lambda words: len(words), IntegerType())
 
     tokenizedDataFrame = \
         regexTokenizer \
             .transform(articlesDataFrame)
 
-    filteredDataFrame= \
+    filteredDataFrame = \
         remover \
             .transform(tokenizedDataFrame) \
             .withColumn("tokens", countTokens(col("filtered")))
@@ -37,7 +38,8 @@ def getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = 20) :
 
     return rescaledDataFrame
 
-def getArticlesBucketsByHashes(rescaledDataFrame, mhModel) :
+
+def getArticlesBucketsByHashes(rescaledDataFrame, mhModel):
     minHashedDataFrame = \
         mhModel \
             .transform(rescaledDataFrame)
@@ -50,10 +52,12 @@ def getArticlesBucketsByHashes(rescaledDataFrame, mhModel) :
 
     return bucketsDataFrame
 
-def getArticlesJaccardDistances(rescaledDataFrame, mhModel, distanceThreshold = 0.5) :
+
+def getArticlesJaccardDistances(rescaledDataFrame, mhModel, distanceThreshold=0.5):
     jaccardDistancesDataFrame = \
         mhModel \
-            .approxSimilarityJoin(rescaledDataFrame, rescaledDataFrame, threshold = distanceThreshold, distCol = "JaccardDistance") \
+            .approxSimilarityJoin(rescaledDataFrame, rescaledDataFrame, threshold=distanceThreshold,
+                                  distCol="JaccardDistance") \
             .select(col("datasetA.id").alias("id1"),
                     col("datasetB.id").alias("id2"),
                     col("jaccardDistance")) \
@@ -62,12 +66,13 @@ def getArticlesJaccardDistances(rescaledDataFrame, mhModel, distanceThreshold = 
 
     return jaccardDistancesDataFrame
 
-if __name__ == '__main__' :
 
+if __name__ == '__main__':
     noOfArguments = len(sys.argv)
 
-    if noOfArguments < 4 :
-        print("Usage: py " + os.path.basename(__file__) + " <inputDirectory> <outputDirectory> <runName> <numFeatures> <numHashTables> <distanceThreshold> \n", )
+    if noOfArguments < 4:
+        print("Usage: py " + os.path.basename(
+            __file__) + " <inputDirectory> <outputDirectory> <runName> <numFeatures> <numHashTables> <distanceThreshold> \n", )
         sys.exit()
 
     inputDirectory = sys.argv[1]
@@ -80,19 +85,22 @@ if __name__ == '__main__' :
     outputPath = os.path.join(outputDirectory, runName)
 
     conf = SparkConf().setMaster("local[*]").setAppName("MinHashing Articles")
-    sc = SparkContext(conf = conf)
+    sc = SparkContext(conf=conf)
     spark = SparkSession(sc)
 
     articlesDataFrame = get_simplified_to_df(spark, inputDirectory)
-    rescaledDataFrame = getArticlesFeaturesFromBody(articlesDataFrame, numFeatures = numFeatures)
+    rescaledDataFrame = getArticlesFeaturesFromBody(articlesDataFrame, numFeatures=numFeatures)
 
-    mh = MinHashLSH(inputCol = "features", outputCol = "hashes", numHashTables = numHashTables)
+    mh = MinHashLSH(inputCol="features", outputCol="hashes", numHashTables=numHashTables)
     mhModel = mh.fit(rescaledDataFrame)
 
     bucketsDataFrame = getArticlesBucketsByHashes(rescaledDataFrame, mhModel)
-    jaccardDistancesDataFrame = getArticlesJaccardDistances(rescaledDataFrame, mhModel, distanceThreshold = distanceThreshold)
+    jaccardDistancesDataFrame = getArticlesJaccardDistances(rescaledDataFrame, mhModel,
+                                                            distanceThreshold=distanceThreshold)
 
     rescaledDataFrame.write.option('path', os.path.join(outputPath, "articles")).saveAsTable("articles")
     mhModel.save(os.path.join(outputPath, "min_hash_model"))
-    bucketsDataFrame.write.option('path', os.path.join(outputPath, "articles_partitioned_by_hashes")).saveAsTable("articles_partitioned_by_hashes")
-    jaccardDistancesDataFrame.write.option('path', os.path.join(outputPath, "articles_jaccard_distances")).saveAsTable("articles_jaccard_distances")
+    bucketsDataFrame.write.option('path', os.path.join(outputPath, "articles_partitioned_by_hashes")).saveAsTable(
+        "articles_partitioned_by_hashes")
+    jaccardDistancesDataFrame.write.option('path', os.path.join(outputPath, "articles_jaccard_distances")).saveAsTable(
+        "articles_jaccard_distances")
